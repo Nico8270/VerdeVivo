@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Verde Vivo - Platos veganos listos para llevar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <h1>Verde Vivo</h1>
+    <p>Platos veganos saludables listos para llevar</p>
+  </header>
+
+  <main class="container">
+    <section class="productos">
+      <h2>Menú del día</h2>
+      <p class="hint">Haz clic en un plato para ver sus detalles y seleccionar la cantidad.</p>
+      <div id="productos-list" class="grid"></div>
+    </section>
+
+    <section class="carrito">
+      <h2>Tu carrito</h2>
+      <ul id="carrito-list"></ul>
+      <p id="carrito-total">Total: $0</p>
+      <button id="vaciar-carrito" class="secondary">Vaciar carrito</button>
+
+      <h3>Datos de entrega</h3>
+      <form id="pedido-form">
+        <input type="text" id="nombre" placeholder="Nombre completo" required />
+        <input type="tel" id="telefono" placeholder="Teléfono" required />
+        <input type="text" id="direccion" placeholder="Dirección" required />
+        <button type="submit">Confirmar pedido</button>
+      </form>
+
+      <div id="pedido-confirmacion" class="mensaje"></div>
+    </section>
+
+    <section class="seguimiento">
+      <h2>Seguimiento de pedido</h2>
+      <form id="seguimiento-form">
+        <input type="text" id="pedido-id" placeholder="ID de pedido" required />
+        <button type="submit">Consultar estado</button>
+      </form>
+      <div id="seguimiento-resultado" class="mensaje"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>Desarrollo Web Móvil - Verde Vivo</small>
+  </footer>
+
+  <!-- Modal de detalle de producto -->
+  <div id="product-modal" class="modal hidden">
+    <div class="modal-content">
+      <button id="modal-close" class="modal-close">&times;</button>
+      <img id="modal-image" class="modal-image" alt="Foto del plato" />
+      <h2 id="modal-title"></h2>
+      <p id="modal-description"></p>
+      <p id="modal-price"></p>
+      <p id="modal-stock"></p>
+      <label for="modal-quantity">Cantidad:</label>
+      <input type="number" id="modal-quantity" min="1" value="1" />
+      <button id="modal-add">Añadir al carrito</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
