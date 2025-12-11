@@ -13,12 +13,15 @@
   </header>
 
   <main class="container">
+    <!-- COLUMNA IZQUIERDA: MENÚ -->
     <section class="productos">
       <h2>Menú del día</h2>
       <p class="hint">Haz clic en un plato para ver sus detalles y seleccionar la cantidad.</p>
+      <!-- ESTE DIV ES CLAVE PARA QUE app.js PINTE LAS TARJETAS -->
       <div id="productos-list" class="grid"></div>
     </section>
 
+    <!-- COLUMNA CENTRAL: CARRITO Y PEDIDO -->
     <section class="carrito">
       <h2>Tu carrito</h2>
       <ul id="carrito-list"></ul>
@@ -36,13 +39,56 @@
       <div id="pedido-confirmacion" class="mensaje"></div>
     </section>
 
-    <section class="seguimiento">
-      <h2>Seguimiento de pedido</h2>
-      <form id="seguimiento-form">
-        <input type="text" id="pedido-id" placeholder="ID de pedido" required />
-        <button type="submit">Consultar estado</button>
-      </form>
-      <div id="seguimiento-resultado" class="mensaje"></div>
+    <!-- COLUMNA DERECHA: SEGUIMIENTO + LOGIN -->
+    <section class="sidebar">
+      <!-- Seguimiento -->
+      <div class="seguimiento">
+        <h2>Seguimiento de pedido</h2>
+        <form id="seguimiento-form">
+          <input type="text" id="pedido-id" placeholder="ID de pedido" required />
+          <button type="submit">Consultar estado</button>
+        </form>
+        <div id="seguimiento-resultado" class="mensaje"></div>
+      </div>
+
+      <!-- Login (un solo login “normal”) -->
+      <div class="login">
+        <h2>Iniciar sesión</h2>
+        <p class="hint">
+          Inicia sesión para identificarte. Si tu cuenta tiene rol de administrador, 
+          se habilitarán opciones adicionales en la misma vista.
+        </p>
+        <form id="login-form">
+          <input
+            type="email"
+            id="login-email"
+            placeholder="Correo electrónico"
+            value="admin@gmail.com"
+            required
+          />
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Contraseña"
+            required
+          />
+          <button type="submit">Iniciar sesión</button>
+        </form>
+
+        <button id="logout-btn" class="secondary hidden">Cerrar sesión</button>
+        <p id="login-status" class="mensaje">No hay sesión iniciada.</p>
+      </div>
+
+      <!-- Panel admin (solo visible si el usuario logueado es admin) -->
+      <div id="admin-panel" class="admin-panel hidden">
+        <h3>Panel de administración</h3>
+        <p class="hint">
+          Aquí podrás gestionar el catálogo cuando estés autenticado como administrador.
+        </p>
+        <button id="crear-demo-btn" class="secondary" disabled>
+          Crear producto demo
+        </button>
+      </div>
     </section>
   </main>
 

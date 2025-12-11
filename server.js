@@ -1,43 +1,86 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const path = require('path');
-const cors = require('cors');
-const morgan = require('morgan');
+// server.js
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const path = require("path");
+const bcrypt = require("bcrypt");
+
+// Modelos
+const User = require("./models/User");
+
+// Rutas
+const productRoutes = require("./routes/productRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const authRoutes = require("./routes/authRoutes");
+const orderRoutes = require("./routes/orders");
 
 const app = express();
 
-// Middlewares
-app.use(cors());
-app.use(express.json());
-app.use(morgan('dev'));
+/* ===================== ADMIN POR DEFECTO ===================== */
+async function ensureDefaultAdmin() {
+  try {
+    const email = "admin@gmail.com";
+    const existing = await User.findOne({ email });
 
-// Conexión a MongoDB
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/verdevivo';
+    if (!existing) {
+      const hash = await bcrypt.hash("1234", 10);
+      await User.create({
+        name: "Admin Verde Vivo",
+        email,
+        password: hash,
+        role: "admin",
+      });
+      console.log("Admin por defecto creado: admin@gmail.com / 1234");
+    } else {
+      console.log("Admin por defecto ya existe.");
+    }
+  } catch (err) {
+    console.error("Error creando admin por defecto:", err);
+  }
+}
+
+/* ===================== MIDDLEWARE ===================== */
+
+// JSON
+app.use(express.json());
+
+// CORS
+app.use(
+  cors({
+    origin: process.env.FRONTEND_ORIGIN || "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+// Servir frontend estático desde /public
+app.use(express.static(path.join(__dirname, "public")));
+
+/* ===================== RUTAS API ===================== */
+
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
+
+app.get("/ping", (req, res) => {
+  res.json({ message: "pong" });
+});
+
+/* ===================== CONEXIÓN A MONGODB ===================== */
 
 mongoose
-  .connect(uri)
-  .then(() => console.log('✅ Conectado a MongoDB'))
-  .catch((err) => console.error('❌ Error MongoDB:', err));
+  .connect(process.env.MONGODB_URI)
+  .then(async () => {
+    console.log("MongoDB conectado correctamente");
+    await ensureDefaultAdmin();
+  })
+  .catch((e) => console.error("Error conectando a MongoDB:", e));
 
-// Rutas API
-const productRoutes = require('./routes/products');
-const cartRoutes = require('./routes/cart');
-const orderRoutes = require('./routes/orders');
-
-app.use('/api/products', productRoutes);
-app.use('/api/cart', cartRoutes);
-app.use('/api/orders', orderRoutes);
-
-// Servir frontend estático
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Fallback SPA simple
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+/* ===================== LEVANTAR SERVIDOR ===================== */
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor escuchando en http://localhost:${PORT}`);
+  console.log(`Servidor Backend en http://localhost:${PORT}`);
 });

@@ -224,3 +224,6 @@ input {
     align-items: start;
   }
 }
+.hidden {
+  display: none;
+}

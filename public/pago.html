@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Portal de Pago Simulado</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="container">
+  <h1>Portal de Pago - Simulación</h1>
+  <p>No se realizará ningún pago real. Este módulo es solo académico.</p>
+
+  <div id="info"></div>
+
+  <button id="pagar" class="primary">Pagar ahora</button>
+  <button id="cancelar" class="secondary">Cancelar pedido</button>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    document.getElementById("info").textContent =
+      "Confirmando pedido ID: " + id;
+
+    document.getElementById("pagar").addEventListener("click", async () => {
+      await fetch(`/api/orders/${id}/pay`, { method: "PUT" });
+      alert("Pago simulado exitoso. Pedido CONFIRMADO.");
+      window.location.href = "/";
+    });
+
+    document.getElementById("cancelar").addEventListener("click", async () => {
+      const res = await fetch(`/api/orders/${id}/cancel`, { method: "PUT" });
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Pedido cancelado con éxito.");
+        window.location.href = "/";
+      } else {
+        alert(data.message);
+      }
+    });
+  </script>
+</body>
+</html>
